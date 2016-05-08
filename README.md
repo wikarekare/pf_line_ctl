@@ -19,33 +19,35 @@ Defines where the directories are
 This file is generated from the DB so the gateway doesn't need to keep referencing the DB. It is mostly static.
 
 Defines which lines exist; which line gets used when a site is assigned to a line; any script associated with activating a line.
-In this case, line 0 has never existed; line 1-3 have been terminated; line 4 - 6 exist, but sites using line 5 have been administratively moved to line 6, while line 5 is being worked on (**Nb**. *The line 5 script wont run when the line specified is not 5* ).
+In this case, line 0 has never existed; line 1-3 have been terminated; line 4 - 6 exist, but sites using line 5 have been administratively marked as inactive, so any sites assigned to line 5 will use the failure map and be assigned to line 6.
+
+If a line fails, or is marked as inactive, and the failure_map is null, then the sites assigned to this line are assigned to the active lines using round robin location. If there is a failure_map, then the sites are assigned to the first active line in the failure map, and if none are active, are round robin'd across the active lines.
 ```
 { 
-  "state": [ 
-      { "line": 0, "config_script": null},   //No line 0
-      { "line": -1, "config_script": null},  //Line 1, disconnected
-      { "line": -1, "config_script": null}, //Line 2, disconnected
-      { "line": -1, "config_script": null}, //Line 3, disconnected
-      { "line": 4, "config_script": null},   //clients allocate to line 4 should use this line
-      { "line": 6, "config_script": "zyxel_fix_iptables.rb"},   //clients allocate to line 5 should use this line.
-      { "line": 6, "config_script": null }   //clients allocate to line 6 should use this line (which could be another line)
-  ]
+  "line": [
+      { "hostname": "",      "active": false, "failure_map": null, "config_script": null},  //No hostname 0
+      { "hostname": "adsl1", "active": false, "failure_map": null, "config_script": null},  //disconnected
+      { "hostname": "adsl2", "active": false, "failure_map": null, "config_script": null},  //disconnected
+      { "hostname": "adsl3", "active": false, "failure_map": null, "config_script": null},  //disconnected
+      { "hostname": "adsl4", "active": true,  "failure_map": null, "config_script": null},   
+      { "hostname": "vdsl1", "active": false,  "failure_map": [6],  "config_script": "zyxel_fix_iptables.rb"},  
+      { "hostname": "vdsl2", "active": true,  "failure_map": [5],  "config_script": null }  
+    ]
 }
 ```
 
 #host_line_map.json
 
-This file is generated from the DB so the gateway doesn't need to keep referencing to DB. It is mostly static.
+This file is generated from the DB so the gateway doesn't need to keep referencing to DB. It is mostly static. A cron job, run once a day (pf_host_line_map_update.rb) updates the file. It could be run more often.
 
 Defines which site uses which of the xDSL lines.
 ```
 { "line":
   [
-    {}, //Line 0
-    {}, //Line 1
-    {}, //Line 2
-    {}, //Line 3
+    null, //Line 0
+    null, //Line 1
+    null, //Line 2
+    null, //Line 3
     {   //Line 4
        "site018": "10.100.1.96/27",
 ...
