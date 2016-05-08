@@ -24,7 +24,8 @@ if my != nil
         line[line_index][row[1]] = "#{row[2]}/#{row[3]}"
       end
     end
-  
+
+#Need to add locking around this, though it will self correct every few minutes.  
     File.open("#{@config.conf_dir}/host_line_map.json", "w") do |fd|
       #fd = $stdout
       fd.puts "{\n\"line\": "
