@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #Run from cron on gateway host
 #*/3 * * * * /wikk/sbin/pf/pf_table_update.sh > /wikk/var/tmp/pf_table_update.out 2>&1
 #
@@ -53,8 +53,8 @@ then
         #Should be derived from DB, so web server would just do lookup
         echo "Copying line state files to web server"
         for i in 5 6 7; do
-          scp -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_${i}.srt line@${WWW_SRV}:line/line${i}.txt
-          scp -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_state_${i} line@${WWW_SRV}:line/line${i}_state.txt
+          scp -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_${i}.srt ${LINE}@${WWW_SRV}:line/line${i}.txt
+          scp -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_state_${i} ${LINE}@${WWW_SRV}:line/line${i}_state.txt
         done
     else
             #Make copies on the web server, so we can easily access the current status.
