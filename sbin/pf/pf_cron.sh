@@ -1,5 +1,5 @@
 #!/bin/bash
-CONF_DIR="/usr/local/wikk/etc/pf"
+PF_CONF_DIR="/usr/local/wikk/etc/pf"
 TMP_DIR="/usr/local/wikk/var/pf"
 WWW_DIR="/services/www/wikarekare/line"
 BIN_DIR="/usr/local/wikk/sbin"
@@ -43,7 +43,7 @@ then
         done
 
         #Should be the other way around, and driven from the web interface, into the DB.
-        scp -i /home/wikk/.ssh/id_rsa ${CONF_DIR}/line_state.json ${CONF_DIR}/host_line_map.json ${LINE}@${REMOTE_COPY}:${CONF_DIR}/
+        scp -i /home/wikk/.ssh/id_rsa ${PF_CONF_DIR}/line_state.json ${PF_CONF_DIR}/host_line_map.json ${LINE}@${REMOTE_COPY}:${PF_CONF_DIR}/
     fi
     /bin/rm -f ${TMP_DIR}/pf_cron.lock
 fi
