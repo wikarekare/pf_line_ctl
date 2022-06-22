@@ -1,16 +1,16 @@
 # pf_line_ctl
 Scripts to control pf tables, hence which xDSL line a site uses
 
-Configuration defined in 4 files. 
+Configuration defined in 4 files.
 
 #pf_line_ctl.json
 
 Defines where the directories are
 ```
 {
-  "conf_dir": "/usr/local/wikk/etc/pf",
-  "tmp_dir": "/usr/local/wikk/var/pf",
-  "bin_dir": "/usr/local/wikk/sbin"
+  "conf_dir": "${WIKK_BASE}/etc/pf",
+  "tmp_dir": "${WIKK_BASE}/var/pf",
+  "bin_dir": "#{WIKK_BASE}/sbin/pf"
 }
 ```
 
@@ -23,7 +23,7 @@ In this case, line 0 has never existed; line 1-3 have been terminated; line 4 - 
 
 If a line fails, or is marked as inactive, and the failure_map is null, then the sites assigned to this line are assigned to the active lines using round robin location. If there is a failure_map, then the sites are assigned to the first active line in the failure map, and if none are active, are round robin'd across the active lines.
 ```
-{ 
+{
   "line": [
       { "hostname": "",      "active": false, "failure_map": null, "config_script": null},  //No hostname 0
       { "hostname": "adsl1", "active": false, "failure_map": null, "config_script": null},  //disconnected
