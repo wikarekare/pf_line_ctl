@@ -3,7 +3,7 @@ require 'json'
 require 'pp'
 require 'wikk_configuration'
 require 'wikk_json'
-RLIB = '../../rlib'
+RLIB = '/wikk/rlib'
 require_relative "#{RLIB}/wikk_conf.rb"
 
 # Which lines exist is defined here.

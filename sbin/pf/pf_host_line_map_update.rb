@@ -4,7 +4,7 @@ require 'pp'
 require 'wikk_sql'
 require 'wikk_configuration'
 require 'wikk_json'
-RLIB = '../../rlib'
+RLIB = '/wikk/rlib'
 require_relative "#{RLIB}/wikk_conf.rb"
 
 # How to find files and directories.
