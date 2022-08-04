@@ -23,11 +23,8 @@ WIKK::SQL.connect(@mysql_conf) do |sql|
   SQL
   sql.each_hash(query) do |row|
     line_index = row['link'].to_i
-    if line[line_index].nil?
-      line[line_index] = { row['site_name'] => "#{row['network']}/#{row['subnet_mask_bits']}" }
-    else
-      line[line_index][row['site_name']] = "#{row['network']}/#{row['subnet_mask_bits']}"
-    end
+    line[line_index] ||= {}
+    line[line_index][row['site_name']] = "#{row['network']}/#{row['subnet_mask_bits']}"
   end
 
   # Only write output if we got rows
