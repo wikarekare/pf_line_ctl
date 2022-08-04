@@ -31,9 +31,12 @@ WIKK::SQL.connect(@mysql_conf) do |sql|
   unless line.empty?
     File.open("#{PF_CONF_DIR}/host_line_map.json", 'w') do |fd|
       # fd = $stdout
-      fd.puts "{\n\"line\": "
-      fd.puts line.to_j
-      fd.puts "\n}\n"
+      fd.print <<~JSON
+        {
+          "line":
+          #{line.to_j}
+        }
+      JSON
     end
   end
 end
