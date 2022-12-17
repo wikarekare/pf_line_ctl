@@ -5,6 +5,7 @@ require 'wikk_configuration'
 require 'wikk_json'
 RLIB = '/wikk/rlib' unless defined? RLIB
 require_relative "#{RLIB}/wikk_conf.rb"
+require_relative "#{RLIB}/dsl/dsl_status.rb"
 
 # Ping a host, and verify the return code
 # @param host [String]
@@ -25,7 +26,6 @@ def check_line_state
     if @line_ctl.line[i]['active']
       # See if the modem is actually working. Internal network test
       adsl_pingable[i] = pingable?(host: @line_ctl.line[i]['hostname'])
-      puts "#{@line_ctl.line[i]['hostname']} is active, state is administratively #{@line_ctl.line[i]['up'] ? 'up' : 'down'}, Pingable #{adsl_pingable[i]}"
       if adsl_pingable[i] && @line_ctl.line[i]['up']
         # If line has a config script, run it.
         if ROLE == 'PRIMARY_PF' && !@line_ctl.line[i]['config_script'].nil?
@@ -34,13 +34,14 @@ def check_line_state
         end
 
         # see if line is connected to the ISP. Have to know external IP address.
-        @line_active[i] = pingable?(host: "external#{i}")
+        @line_active[i] = line_up?(host: @line_ctl.line[i]['hostname']) && pingable?(host: "external#{i}")
       else # Can't ping the xDSL router, so we wouldn't be able to ping the external line.
         @line_active[i] = false # Line is inactive, as internal ping failed.
       end
     else # Line is administratively offline. (Don't bother pinging it)
       adsl_pingable[i] = @line_active[i] = false
     end
+    puts "#{@line_ctl.line[i]['hostname']} is active, state is administratively #{@line_ctl.line[i]['up'] ? 'up' : 'down'}, Pingable: #{adsl_pingable[i]}, Line_up: #{@line_active[i]}"
   rescue StandardError => e
     warn "Error for line[#{i}]: #{e}"
     adsl_pingable[i] = @line_active[i] = false
@@ -105,6 +106,13 @@ def sites_to_original_lines
       @out[i] << [ host, network, i ] # Populate out queue with host, network and what the line should have been
     end
   end
+end
+
+def line_up?(host:)
+  status = ADSL_Status.status(host)
+  return status != nil && status['line_status'] == 'Up'
+rescue StandardError
+  return false
 end
 
 # Which lines exist is defined here.
