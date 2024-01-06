@@ -6,6 +6,7 @@
 #customer network line map
 #
 . /wikk/etc/wikk.conf
+SCP=/usr/bin/scp
 
 #Depends on https://github.com/rbur004/lockfile
 LOCK_PID_FILE=${TMP_DIR}/pf/pf_cron.lock
@@ -18,11 +19,11 @@ then
     for i in 5 6 7; do
       if [ ! -e ${PF_WRK_DIR}/table_line_${i} ]
       then
-        cp /dev/null ${PF_WRK_DIR}/table_line_${i}
+        ${CP} /dev/null ${PF_WRK_DIR}/table_line_${i}
       fi
       if [ ! -e ${PF_WRK_DIR}/table_line_state_${i} ]
       then
-        cp /dev/null ${PF_WRK_DIR}/table_line_state_${i}
+        ${CP} /dev/null ${PF_WRK_DIR}/table_line_state_${i}
       fi
     done
 
@@ -53,17 +54,17 @@ then
         #Should be derived from DB, so web server would just do lookup
         echo "Copying line state files to web server"
         for i in 5 6 7; do
-          scp -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_${i}.srt ${LINE}@${WWW_SRV}:line/line${i}.txt
-          scp -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_state_${i} ${LINE}@${WWW_SRV}:line/line${i}_state.txt
+          ${SCP} -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_${i}.srt ${LINE}@${WWW_SRV}:line/line${i}.txt
+          ${SCP} -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_state_${i} ${LINE}@${WWW_SRV}:line/line${i}_state.txt
         done
     else
             #Make copies on the web server, so we can easily access the current status.
         #Should be derived from DB, so web server would just do lookup
         for i in 5 6 7; do
-          cp ${PF_WRK_DIR}/table_line_${i}.srt ${LINE_WWW_DIR}/line${i}.txt
-          cp ${PF_WRK_DIR}/table_line_state_${i} ${LINE_WWW_DIR}/line${i}_state.txt
+          ${CP} ${PF_WRK_DIR}/table_line_${i}.srt ${LINE_WWW_DIR}/line${i}.txt
+          ${CP} ${PF_WRK_DIR}/table_line_state_${i} ${LINE_WWW_DIR}/line${i}_state.txt
         done
     fi
 fi
 
-rm -f ${LOCK_PID_FILE}
+${RM} -f ${LOCK_PID_FILE}
