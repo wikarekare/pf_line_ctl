@@ -1,0 +1,22 @@
+#!/bin/bash
+. /wikk/etc/wikk.conf
+
+WC=/usr/bin/wc
+CAT=/bin/cat
+MAKE=/usr/bin/make
+
+#Depends on https://github.com/rbur004/lockfile
+LOCK_PID_FILE=${TMP_DIR}/pf/pf_block_drop.lock
+${LOCKFILE} ${LOCK_PID_FILE} $$
+if [ $? != 0 ] ; then  exit 0 ; fi
+
+${CAT} ${PF_CONF_DIR}/block ${PF_CONF_DIR}/blocked_drop | ${SORT} -u > ${TMP_DIR}/pf/blocked_drop
+
+old_count=$(${WC} -l ${PF_CONF_DIR}/blocked_drop | ${AWK} ' {print $1 }' )
+new_count=$(${WC} -l ${TMP_DIR}/pf/blocked_drop | ${AWK} ' {print $1 }' )
+if [[ ${new_count} -gt ${old_count} ]]
+then
+  ( cd ${PF_CONF_DIR}/; ${CP} ${TMP_DIR}/pf/blocked_drop blocked_drop; ${MAKE} ) > ${TMP_DIR}/block_run
+fi
+
+${RM} -f ${LOCK_PID_FILE}
