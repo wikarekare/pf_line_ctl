@@ -15,6 +15,13 @@ def pingable?(host:)
   $CHILD_STATUS.to_i == 0
 end
 
+def line_up?(host:)
+  status = ADSL_Status.status(host)
+  return status != nil && status['line_status'] == 'Up'
+rescue StandardError
+  return false
+end
+
 # Check that the xDSL modems are up, and connected to the ISP
 # Sets @line_active[]
 def check_line_state
@@ -27,7 +34,7 @@ def check_line_state
       # See if the modem is actually working. Internal network test
       adsl_pingable[i] = pingable?(host: @line_ctl.line[i]['hostname'])
       if adsl_pingable[i] && @line_ctl.line[i]['up']
-        # If line has a config script, run it.
+        # If line has a config script, run it. And we are the current 'gate' host
         if ROLE == 'PRIMARY_PF' && !@line_ctl.line[i]['config_script'].nil?
           puts "Running #{SBIN_DIR}/pf/#{@line_ctl.line[i]['config_script']}"
           system("#{SBIN_DIR}/pf/#{@line_ctl.line[i]['config_script']}")
@@ -108,13 +115,6 @@ def sites_to_original_lines
   end
 end
 
-def line_up?(host:)
-  status = ADSL_Status.status(host)
-  return status != nil && status['line_status'] == 'Up'
-rescue StandardError
-  return false
-end
-
 # Which lines exist is defined here.
 @line_ctl = WIKK::Configuration.new("#{PF_CONF_DIR}/line_state.json")
 # number of defined, but not necessarily active, external lines.
@@ -132,6 +132,10 @@ if @active_lines.length > 0 # at least one line is up ;)
 else
   warn 'All external lines are down'
   sites_to_original_lines
+end
+
+File.open("#{PF_WRK_DIR}/line_active.json", 'w') do |fd|
+  fd.puts @line_active.to_j
 end
 
 # Now output the table_line_x (Pf tables to load with pf_ctl) and table_line_state_x (Web page status info) files.
