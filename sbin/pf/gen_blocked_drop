@@ -1,0 +1,12 @@
+#!/bin/bash
+. /wikk/etc/wikk.conf
+
+LOCK_PID_FILE=${TMP_DIR}/ban.lock
+${LOCKFILE} ${LOCK_PID_FILE} $$
+if [ $? != 0 ] ; then  exit 0 ; fi
+
+zgrep 'sshd.* disconnect ' /var/log/auth* | egrep -v -f ${PF_CONF_DIR}/allow_pattern | awk ' { printf "%s/32\n", $9 }' | sort -u  > ${TMP_DIR}/block
+scp -i ${SSH_KEY_DIR}/line_id_rsa ${TMP_DIR}/block ${LINE}@${PF_HOST_1}:${PF_CONF_DIR}/
+scp -i ${SSH_KEY_DIR}/line_id_rsa ${TMP_DIR}/block ${LINE}@${PF_HOST_2}:${PF_CONF_DIR}/
+
+${RM} -f ${LOCK_PID_FILE}
