@@ -2,8 +2,10 @@
 require 'json'
 require 'wikk_configuration'
 require 'wikk_json'
-RLIB = '/wikk/rlib' unless defined? RLIB
-require_relative "#{RLIB}/wikk_conf.rb"
+
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
 
 @line_ctl = WIKK::Configuration.new("#{PF_CONF_DIR}/line_state.json")
 @num_lines = @line_ctl.line.length - 1

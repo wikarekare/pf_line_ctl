@@ -4,8 +4,10 @@ require 'pp'
 require 'wikk_sql'
 require 'wikk_configuration'
 require 'wikk_json'
-RLIB = '/wikk/rlib' unless defined? RLIB
-require_relative "#{RLIB}/wikk_conf.rb"
+
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
 
 # How to find files and directories.
 @mysql_conf = WIKK::Configuration.new(MYSQL_CONF)

@@ -3,8 +3,10 @@ require 'json'
 require 'pp'
 require 'wikk_configuration'
 require 'wikk_json'
-RLIB = '/wikk/rlib' unless defined? RLIB
-require_relative "#{RLIB}/wikk_conf.rb"
+
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
 require_relative "#{RLIB}/dsl/dsl_status.rb"
 
 # Ping a host, and verify the return code
