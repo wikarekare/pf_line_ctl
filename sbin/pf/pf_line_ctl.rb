@@ -1,6 +1,5 @@
 #!/usr/local/bin/ruby
 require 'json'
-require 'pp'
 require 'wikk_configuration'
 require 'wikk_json'
 
