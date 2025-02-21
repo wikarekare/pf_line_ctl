@@ -38,7 +38,13 @@ def check_line_state
         # If line has a config script, run it. And we are the current 'gate' host
         if ROLE == 'PRIMARY_PF' && !@line_ctl.line[i]['config_script'].nil?
           puts "Running #{SBIN_DIR}/pf/#{@line_ctl.line[i]['config_script']}"
-          system("#{SBIN_DIR}/pf/#{@line_ctl.line[i]['config_script']}")
+          begin
+            `#{SBIN_DIR}/pf/#{@line_ctl.line[i]['config_script']}`
+          rescue RuntimeError => e
+            warn e.message
+          rescue SystemCallError => e
+            warn e.message
+          end
         end
 
         # see if line is connected to the ISP. Have to know external IP address.
