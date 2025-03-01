@@ -40,9 +40,7 @@ def check_line_state
           puts "Running #{SBIN_DIR}/pf/#{@line_ctl.line[i]['config_script']}"
           begin
             `#{SBIN_DIR}/pf/#{@line_ctl.line[i]['config_script']}`
-          rescue RuntimeError => e
-            warn e.message
-          rescue SystemCallError => e
+          rescue StandardError => e
             warn e.message
           end
         end

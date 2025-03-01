@@ -54,7 +54,7 @@ then
 
     if [ "${WEB_SRV}" != "" -a "${ROLE}" == "PRIMARY_PF" ]
     then
-        #Make copies on the web server, so we can easily access the current status.
+        #Make copies on the remote web server, so we can easily access the current status.
         #Should be derived from DB, so web server would just do lookup
         echo "Copying line state files to web server"
         ${SCP} -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/line_active.json ${LINE}@${WWW_SRV}:line/line_active.json
@@ -63,7 +63,7 @@ then
           ${SCP} -i /home/line/.ssh/id_rsa  ${PF_WRK_DIR}/table_line_state_${i} ${LINE}@${WWW_SRV}:line/line${i}_state.txt
         done
     else
-            #Make copies on the web server, so we can easily access the current status.
+        #Make copies in the local web server dir
         #Should be derived from DB, so web server would just do lookup
         for i in $active_lines ; do
           ${CP} ${PF_WRK_DIR}/table_line_${i}.srt ${LINE_WWW_DIR}/line${i}.txt
