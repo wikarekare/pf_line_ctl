@@ -3,9 +3,7 @@ require 'json'
 require 'wikk_configuration'
 require 'wikk_json'
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 
 @line_ctl = WIKK::Configuration.new("#{PF_CONF_DIR}/line_state.json")
 @num_lines = @line_ctl.line.length - 1

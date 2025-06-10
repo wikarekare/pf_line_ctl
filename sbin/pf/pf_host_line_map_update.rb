@@ -5,9 +5,7 @@ require 'wikk_sql'
 require 'wikk_configuration'
 require 'wikk_json'
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 
 # How to find files and directories.
 @mysql_conf = WIKK::Configuration.new(MYSQL_CONF)

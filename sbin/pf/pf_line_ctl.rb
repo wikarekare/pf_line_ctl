@@ -3,9 +3,7 @@ require 'json'
 require 'wikk_configuration'
 require 'wikk_json'
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 require_relative "#{RLIB}/dsl/dsl_status.rb"
 
 # Ping a host, and verify the return code
