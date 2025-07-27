@@ -4,5 +4,11 @@
     "mode": "0755",
     "user": "root",
     "group": "root"
+  },
+  { "src": "www/wikarekare/line",
+    "dst": "www/wikarekare/line",
+    "mode": "0755",
+    "user": "line",
+    "group": "line"
   }
 ]
