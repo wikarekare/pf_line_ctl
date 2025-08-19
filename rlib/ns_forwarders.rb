@@ -14,7 +14,7 @@ class NS_Forwarders
 
   # associate a name server forwarder with one of our lines
   # Lets us have multiple paths out
-  def change_ns_forwarder_line(line_active:)
+  def change_ns_forwarder_line
     @line_ctl.each_with_index do |_lctl, _i|
       unless @current_forwarder_map['ns_forwarder'].nil? # Skip the unconfigured ones
         # Do something
