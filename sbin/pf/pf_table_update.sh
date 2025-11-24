@@ -41,8 +41,8 @@ then
      ${SORT} -u ${PF_WRK_DIR}/table_line_${i} > ${PF_WRK_DIR}/table_line_${i}.srt
     done
 
-    #decommissioned lines 1 to 3
-    #So only need to do this for lines 5 through 7
+    #decommissioned lines 1 to 5
+    #So only need to do this for lines 6 through 7
     for i in $active_lines ; do
       ${CMP} -s ${PF_WRK_DIR}/local_nets_${i} ${PF_WRK_DIR}/table_line_${i}.srt
       if [ $? != 0 ]
